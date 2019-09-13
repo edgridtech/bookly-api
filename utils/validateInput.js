@@ -29,11 +29,13 @@ const validateInput = {
       return res.status(401).send({
         message: 'Phone/email field must not be empty'
       });
-    } if (phone && !validator.isMobilePhone(phone, 'en-NG')) {
-      return res.status(401).send({
-        message: 'Phone must be a valid number'
-      });
-    } if (typeof (subjects) === 'undefined' || !Array.isArray(subjects)) {
+    } 
+    // if (phone && !validator.isMobilePhone(phone, 'en-NG')) {
+    //   return res.status(401).send({
+    //     message: 'Phone must be a valid number'
+    //   });
+    // } 
+    if (typeof (subjects) === 'undefined' || !Array.isArray(subjects)) {
       return res.status(401).send({
         message: 'subjects should be an array'
       });
