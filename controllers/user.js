@@ -422,7 +422,9 @@ export default {
     const { flipId } = req.body 
     try {
       let user = await User.findById(req.decoded.id)
-      if (user.bookmarks.find(bmrk =>  bmrk.flipId === flipId)) {
+      if (user.bookmarks.find(bmrk =>  {
+        return bmrk.flipId === flipId
+      })) {
         User.findByIdAndUpdate(
           req.decoded.id,
           {$pull: 
