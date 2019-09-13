@@ -382,7 +382,7 @@ export default {
     const { flipId, status } = req.body 
     try {
       let user = await User.findById(req.decoded.id)
-      let bookmark = user.bookmarks.find(bmrk => bmrk._id === flipId && bmrk.status === status)
+      let bookmark = user.bookmarks.find(bmrk => bmrk.flipId === flipId && bmrk.status === status)
       if (!bookmark) {
         User.findByIdAndUpdate(
           req.decoded.id,
