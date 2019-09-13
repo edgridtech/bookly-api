@@ -426,7 +426,7 @@ export default {
         User.findByIdAndUpdate(
           req.decoded.id,
           {$pull: 
-            { "bookmarks": flipId }
+            { "bookmarks": {flipId} }
           },
           function(err, doc) {
             if(err) {
