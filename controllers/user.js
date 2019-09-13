@@ -345,6 +345,7 @@ export default {
   async getUserFlips(req, res) {
     try {
       const user = await User.findById(req.decoded.id).exec();
+      const allSubjects = await Subject.find().exec()
 
       Flip.find().exec()
       .then(flips => {
