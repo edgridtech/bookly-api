@@ -377,7 +377,7 @@ export default {
     }
   },
 
-  async abookmarkFlip(req, res) {
+  async bookmarkFlip(req, res) {
     const { flipId } = req.body 
     try {
       let user = await User.findById(req.decoded.id)
