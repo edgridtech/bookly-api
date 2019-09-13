@@ -55,7 +55,7 @@ router.get('/user/flips', hasToken, user.getUserFlips);
 router.post('/bookmark', hasToken, user.bookmarkFlip)
 
 // Delete flip from user bookmarks
-router.delete('/bookmark', hasToken, user.deleteBookmark)
+router.put('/bookmark', hasToken, user.deleteBookmark)
 
 
 
