@@ -378,7 +378,7 @@ export default {
   },
 
   async abookmarkFlip(req, res) {
-    const { flipId } = req.body
+    const { flipId } = req.body 
     try {
       let user = await User.findById(req.decoded.id)
       if (!user.bookmarks.includes(flipId)) {
