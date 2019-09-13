@@ -351,7 +351,7 @@ export default {
         let resp = []
         user.subjects.forEach((subject, i) => {
           resp[i] = {
-            subject: subject.name,
+            subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
             flips: []
           }
         })
@@ -378,14 +378,15 @@ export default {
   },
 
   async bookmarkFlip(req, res) {
-    const { flipId } = req.body 
+    const { flipId, status } = req.body 
     try {
       let user = await User.findById(req.decoded.id)
-      if (!user.bookmarks.includes(flipId)) {
+      let bookmark = user.bookmarks.find(bmrk => bmrk._id === flipId && bmrk.status === status)
+      if (!bookmark) {
         User.findByIdAndUpdate(
           req.decoded.id,
           {$push: 
-            { "bookmarks": flipId }
+            { "bookmarks": req.body }
           },
           function(err, doc) {
             if(err) {
