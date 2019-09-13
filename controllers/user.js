@@ -377,14 +377,15 @@ export default {
     }
   },
 
-  bookmarkFlip(req, res) {
-    const { flipId } = req.body
+  async abookmarkFlip(req, res) {
+    // const { flipId } = req.body
     try {
-      let user = User.findByIdAndUpdate(req.decoded.id)
+      let user = await User.findById(req.decoded.id)
       if (!user.bookmarks.includes(flipId)) {
-        User.findByIdAndUpdate(req.decoded.id,
+        User.findByIdAndUpdate(
+          req.decoded.id,
           {$push: 
-            {bookmarks: flipId}
+            { "bookmarks": flipId }
           },
           function(err, doc) {
             if(err) {
