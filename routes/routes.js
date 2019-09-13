@@ -54,6 +54,9 @@ router.get('/user/flips', hasToken, user.getUserFlips);
 // Add flip to user bookmarks
 router.post('/bookmark', hasToken, user.bookmarkFlip)
 
+// Delete flip from user bookmarks
+router.delete('/bookmark', hasToken, user.deleteBookmark)
+
 
 
 // ===== Subject Routes =====

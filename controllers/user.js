@@ -404,14 +404,53 @@ export default {
         )
       } else {
         res.status(400).send({
-          message: 'Flip already bookmarked',
-          error
+          message: 'Flip already bookmarked'
         });
       }
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         message: 'Server Error',
-        error
+        err
+      });
+    }
+  },
+
+  async deleteBookmark(req, res) {
+    const { flipId } = req.body 
+    try {
+      let user = await User.findById(req.decoded.id)
+      if (user.bookmarks.includes(flipId)) {
+        User.findByIdAndUpdate(
+          req.decoded.id,
+          {$pull: 
+            { "bookmarks": flipId }
+          },
+          function(err, doc) {
+            if(err) {
+              res.status(500).send({
+                message: 'An error occured',
+                err
+              });
+            } else {
+              //do stuff
+              res.status(201).send({
+                success: true,
+                message: 'Bookmark successfully deleted'
+              })
+            }
+          }
+        )
+      } else {
+        res.status(400).send({
+          message: 'Bookmark not found'
+        });
+      }
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        message: 'Server Error',
+        err
       });
     }
   }
