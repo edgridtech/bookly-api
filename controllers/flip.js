@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Flip from '../models/Flip';
 import Subject from '../models/Subjects';
+var cloud = require('../config/cloudinary');
 
 mongoose.Promise = global.Promise;
 
@@ -88,6 +89,28 @@ export default {
     .catch(err => {
       res.status(400).send({err})
     })
+  },
+
+  uploadImage: function(req, res, next) {
+  try{
+  var imageDetails = {
+  picture: req.files[0].path,
   }
+  cloud.uploads(imageDetails.picture).then((result) => {
+  if (result){
+  res.json({
+  data: result.url,
+  message: "created successfully"
+  })
+  }
+  else{
+  res.status(401).json({status:"error", message: "Image upload failed"});	
+  }
+  })
+ }
+catch(execptions){
+console.log(execptions)
+}
+}
 
 };

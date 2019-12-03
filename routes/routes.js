@@ -6,6 +6,7 @@ import user from '../controllers/user';
 import textbook from '../controllers/textbook';
 import notes from '../controllers/notes';
 import flip from '../controllers/flip'
+var upload = require('../config/multer');
 
 const { hasToken, isAdmin } = jwtVerify;
 
@@ -44,6 +45,9 @@ router.get('/flip', hasToken, flip.getFlips);
 
 // search flips
 router.post('/flip/search', hasToken, flip.searchFlips)
+
+// add image
+router.post('/', upload.any(), hasToken, flip.uploadImage);
 
 // Getuser subjects
 router.get('/user/subjects', hasToken, user.getUserSubjects);
