@@ -99,7 +99,7 @@ export default {
       }
 
       if (user) {
-        
+
         const token = jwt.sign(
           {
             id: user._id,
@@ -110,32 +110,32 @@ export default {
         );
 
         const allSubjects = await Subject.find().exec()
-        
-        Flip.find().exec()
-        .then(flips => {
-          let resp = []
-          user.subjects.forEach((subject, i) => {
-            resp[i] = {
-              subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
-              flips: []
-            }
-          })
 
-          flips.forEach((flip) => {
-            let foundIndex = null
-            resp.find((subject, j) => {
-              subject.subject === flip.subject ? foundIndex = j : foundIndex = null
-              return subject.subject === flip.subject
-            }) && resp[foundIndex].flips.push(flip)
+        Flip.find().exec()
+          .then(flips => {
+            let resp = []
+            user.subjects.forEach((subject, i) => {
+              resp[i] = {
+                subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
+                flips: []
+              }
+            })
+
+            flips.forEach((flip) => {
+              let foundIndex = null
+              resp.find((subject, j) => {
+                subject.subject === flip.subject ? foundIndex = j : foundIndex = null
+                return subject.subject === flip.subject
+              }) && resp[foundIndex].flips.push(flip)
+            })
+
+            res.status(201).send({
+              success: true,
+              user,
+              token,
+              flips: resp
+            });
           })
-          
-          res.status(201).send({
-            success: true,
-            user,
-            token,
-            flips: resp 
-          });
-        })
       }
 
     } catch (err) {
@@ -152,31 +152,31 @@ export default {
       const user = await User.findById(req.decoded.id).exec()
       if (user) {
         const allSubjects = await Subject.find().exec()
-        
-        Flip.find().exec()
-        .then(flips => {
-          let resp = []
-          user.subjects.forEach((subject, i) => {
-            resp[i] = {
-              subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
-              flips: []
-            }
-          })
 
-          flips.forEach((flip) => {
-            let foundIndex = null
-            resp.find((subject, j) => {
-              subject.subject === flip.subject ? foundIndex = j : foundIndex = null
-              return subject.subject === flip.subject
-            }) && resp[foundIndex].flips.push(flip)
+        Flip.find().exec()
+          .then(flips => {
+            let resp = []
+            user.subjects.forEach((subject, i) => {
+              resp[i] = {
+                subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
+                flips: []
+              }
+            })
+
+            flips.forEach((flip) => {
+              let foundIndex = null
+              resp.find((subject, j) => {
+                subject.subject === flip.subject ? foundIndex = j : foundIndex = null
+                return subject.subject === flip.subject
+              }) && resp[foundIndex].flips.push(flip)
+            })
+
+            res.status(201).send({
+              success: true,
+              user,
+              flips: resp
+            });
           })
-          
-          res.status(201).send({
-            success: true,
-            user,
-            flips: resp 
-          });
-        })
       }
     } catch (err) {
       res.status(500).send({
@@ -348,28 +348,28 @@ export default {
       const allSubjects = await Subject.find().exec()
 
       Flip.find().exec()
-      .then(flips => {
-        let resp = []
-        user.subjects.forEach((subject, i) => {
-          resp[i] = {
-            subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
-            flips: []
-          }
-        })
+        .then(flips => {
+          let resp = []
+          user.subjects.forEach((subject, i) => {
+            resp[i] = {
+              subject: allSubjects.find(subj => JSON.stringify(subj._id) === JSON.stringify(subject)).name,
+              flips: []
+            }
+          })
 
-        flips.forEach((flip) => {
-          let foundIndex = null
-          resp.find((subject, j) => {
-            subject.subject === flip.subject ? foundIndex = j : foundIndex = null
-            return subject.subject === flip.subject
-          }) && resp[foundIndex].flips.push(flip)
-        })
+          flips.forEach((flip) => {
+            let foundIndex = null
+            resp.find((subject, j) => {
+              subject.subject === flip.subject ? foundIndex = j : foundIndex = null
+              return subject.subject === flip.subject
+            }) && resp[foundIndex].flips.push(flip)
+          })
 
-        res.status(200).send({
-          success: true,
-          flips: resp 
-        });
-      })
+          res.status(200).send({
+            success: true,
+            flips: resp
+          });
+        })
     } catch (error) {
       res.status(500).send({
         message: 'Server Error',
@@ -379,18 +379,19 @@ export default {
   },
 
   async bookmarkFlip(req, res) {
-    const { flipId, status } = req.body 
+    const { flipId, status } = req.body
     try {
       let user = await User.findById(req.decoded.id)
       let bookmark = user.bookmarks.find(bmrk => bmrk.flipId === flipId && bmrk.status === status)
       if (!bookmark) {
         User.findByIdAndUpdate(
           req.decoded.id,
-          {$push: 
-            { "bookmarks": req.body }
+          {
+            $push:
+              { "bookmarks": req.body }
           },
-          function(err, doc) {
-            if(err) {
+          function (err, doc) {
+            if (err) {
               res.status(500).send({
                 message: 'An error occured',
                 err
@@ -419,19 +420,20 @@ export default {
   },
 
   async deleteBookmark(req, res) {
-    const { flipId } = req.body 
+    const { flipId } = req.body
     try {
       let user = await User.findById(req.decoded.id)
-      if (user.bookmarks.find(bmrk =>  {
+      if (user.bookmarks.find(bmrk => {
         return bmrk.flipId === flipId
       })) {
         User.findByIdAndUpdate(
           req.decoded.id,
-          {$pull: 
-            { "bookmarks": {flipId} }
+          {
+            $pull:
+              { "bookmarks": { flipId } }
           },
-          function(err, doc) {
-            if(err) {
+          function (err, doc) {
+            if (err) {
               res.status(500).send({
                 message: 'An error occured',
                 err

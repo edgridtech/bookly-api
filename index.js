@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import routes from './routes/routes';
+var path = require('path');
 
 const option = {
   server: {
@@ -48,6 +49,9 @@ app.use((req, res, next) => {
 // Parse incoming requests data (https://github.com/expressjs/body-parser)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/api/v1/uploads', express.static('uploads'))
 
 app.use('/api/v1', routes);
 

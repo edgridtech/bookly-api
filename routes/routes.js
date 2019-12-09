@@ -6,6 +6,13 @@ import user from '../controllers/user';
 import textbook from '../controllers/textbook';
 import notes from '../controllers/notes';
 import flip from '../controllers/flip'
+// var upload = require('../config/multer');
+
+
+const multer = require('multer')
+const upload = multer({
+    dest: 'uploads/'
+})
 
 const { hasToken, isAdmin } = jwtVerify;
 
@@ -47,6 +54,12 @@ router.get('/flip', hasToken, flip.getFlips);
 
 // search flips
 router.post('/flip/search', hasToken, flip.searchFlips)
+
+// add image
+router.post('/upload-img', upload.single('file'), flip.uploadImage);
+
+// Getuser subjects
+router.get('/user/subjects', hasToken, user.getUserSubjects);
 
 // Get user Flips
 router.get('/user/flips', hasToken, user.getUserFlips);

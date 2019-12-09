@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Flip from '../models/Flip';
 import Subject from '../models/Subjects';
+var cloud = require('../config/cloudinary');
 
 mongoose.Promise = global.Promise;
 
@@ -8,14 +9,14 @@ export default {
 
   async addFlip(req, res) {
     const {
-        title,
-        text,
-        paid,
-        banner,
-        subject,
-        description,
-        longDesc,
-        level
+      title,
+      text,
+      paid,
+      banner,
+      subject,
+      description,
+      longDesc,
+      level
     } = req.body
     try {
       const flip = new Flip({
@@ -45,49 +46,71 @@ export default {
   async getFlips(req, res) {
     const subjects = await Subject.find()
     Flip.find().exec()
-    .then(flips => {
-      let resp = []
-      subjects.forEach((subject, i) => {
-        resp[i] = {
-          subject: subject.name,
-          flips: []
-        }
-      })
+      .then(flips => {
+        let resp = []
+        subjects.forEach((subject, i) => {
+          resp[i] = {
+            subject: subject.name,
+            flips: []
+          }
+        })
 
-      flips.forEach((flip) => {
-        let foundIndex = null
-        resp.find((subject, j) => {
-          subject.subject === flip.subject ? foundIndex = j : foundIndex = null
-          return subject.subject === flip.subject
-        }) && resp[foundIndex].flips.push(flip)
+        flips.forEach((flip) => {
+          let foundIndex = null
+          resp.find((subject, j) => {
+            subject.subject === flip.subject ? foundIndex = j : foundIndex = null
+            return subject.subject === flip.subject
+          }) && resp[foundIndex].flips.push(flip)
+        })
+
+        res.status(200).send({ flips: resp })
       })
-      
-      res.status(200).send({ flips: resp })
-    })
-    .catch(err => {
-      res.status(400).send({err})
-    })
+      .catch(err => {
+        res.status(400).send({ err })
+      })
   },
 
   async searchFlips(req, res) {
     let query = req.body.query.toLowerCase()
     Flip.find().exec()
-    .then(flips => {
-      let searchResults = flips.filter((flip) => {
-        return flip.title.toLowerCase().includes(query) ||
-        flip.text.toLowerCase().includes(query) ||
-        flip.subject.toLowerCase().includes(query) ||
-        flip.description.toLowerCase().includes(query) ||
-        flip.longDesc.toLowerCase().includes(query)
+      .then(flips => {
+        let searchResults = flips.filter((flip) => {
+          return flip.title.toLowerCase().includes(query) ||
+            flip.text.toLowerCase().includes(query) ||
+            flip.subject.toLowerCase().includes(query) ||
+            flip.description.toLowerCase().includes(query) ||
+            flip.longDesc.toLowerCase().includes(query)
+        })
+        res.status(200).send({
+          message: 'Search results',
+          searchResults
+        })
       })
-      res.status(200).send({
-        message: 'Search results',
-        searchResults
+      .catch(err => {
+        res.status(400).send({ err })
       })
-    })
-    .catch(err => {
-      res.status(400).send({err})
-    })
+  },
+
+  uploadImage: function (req, res, next) {
+    try {
+      var imageDetails = {
+        picture: req.file.path,
+      }
+      cloud.uploads(imageDetails.picture).then((result) => {
+        if (result) {
+          res.json({
+            data: result.url,
+            message: "created successfully"
+          })
+        }
+        else {
+          res.status(401).json({ status: "error", message: "Image upload failed" });
+        }
+      })
+    }
+    catch (execptions) {
+      console.log(execptions)
+    }
   }
 
 };
