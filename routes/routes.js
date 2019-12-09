@@ -56,7 +56,7 @@ router.get('/flip', hasToken, flip.getFlips);
 router.post('/flip/search', hasToken, flip.searchFlips)
 
 // add image
-router.post('/upload-img', upload.single('file'), flip.uploadImage);
+router.post('/upload-img', upload.single('file'), hasToken, flip.uploadImage);
 
 // Getuser subjects
 router.get('/user/subjects', hasToken, user.getUserSubjects);
